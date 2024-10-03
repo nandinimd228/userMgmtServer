@@ -22,6 +22,8 @@ git clone "https://github.com/nandinimd228/userManagementServer.git"
 
 ### Test the Application
 Use command **mvn test.** The test reports are available under /src/main/target/site/jacoco. Run the index.html file to view the test results.
+![image](https://github.com/user-attachments/assets/99b0b9f6-0b0d-48fd-8e5f-afbc581659ca)
+
 
 ### Run the Application locally
 Use command **mvn spring-boot:run.** Access the application in http://localhost:8080
