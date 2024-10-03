@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserAccountController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.example.server.controller</a> &gt; <span class="el_source">UserAccountController.java</span></div><h1>UserAccountController.java</h1><pre class="source lang-java linenums">package com.example.server.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.server.entity.UserAccount;
+import com.example.server.exception.EmailAlreadyExistsException;
+import com.example.server.exception.UserAccountNotFoundException;
+import com.example.server.service.UserAccountService;
+import java.util.Collections;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping(&quot;/api/v1/userAccount&quot;)
+<span class="fc" id="L28">public class UserAccountController {</span>
+
+    @Autowired
+    private UserAccountService accountService;
+
+    @PostMapping
+    public ResponseEntity&lt;?&gt; createAccount(@Valid @RequestBody UserAccount account) {
+        try {
+<span class="fc" id="L36">            UserAccount createdAccount = accountService.createAccount(account);</span>
+<span class="fc" id="L37">            return ResponseEntity.ok(createdAccount);</span>
+<span class="fc" id="L38">        } catch (EmailAlreadyExistsException e) {</span>
+<span class="fc" id="L39">            return ResponseEntity.status(HttpStatus.CONFLICT)</span>
+<span class="fc" id="L40">                    .body(Collections.singletonMap(&quot;message&quot;, e.getMessage()));</span>
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;UserAccount&gt;&gt; getAllAccounts() {
+<span class="fc" id="L46">        List&lt;UserAccount&gt; accounts = accountService.getAllAccounts();</span>
+<span class="fc" id="L47">        return ResponseEntity.ok(accounts);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; getAccountById(@PathVariable Long id) {
+        try {
+<span class="fc" id="L53">            UserAccount account = accountService.getAccountById(id);</span>
+<span class="fc" id="L54">            return ResponseEntity.ok(account);</span>
+<span class="fc" id="L55">        } catch (UserAccountNotFoundException e) {</span>
+<span class="fc" id="L56">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L57">                    .body(Collections.singletonMap(&quot;message&quot;, e.getMessage()));</span>
+        }
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; updateAccount(@PathVariable Long id,
+            @Valid @RequestBody UserAccount accountDetails) {
+        try {
+<span class="fc" id="L65">            UserAccount updatedAccount = accountService.updateAccount(id, accountDetails);</span>
+<span class="fc" id="L66">            return ResponseEntity.ok(updatedAccount);</span>
+<span class="fc" id="L67">        } catch (UserAccountNotFoundException e) {</span>
+<span class="fc" id="L68">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L69">                    .body(Collections.singletonMap(&quot;message&quot;, e.getMessage()));</span>
+        }
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; deleteAccount(@PathVariable Long id) {
+        try {
+<span class="fc" id="L76">            accountService.deleteAccount(id);</span>
+<span class="fc" id="L77">            return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L78">        } catch (UserAccountNotFoundException e) {</span>
+<span class="fc" id="L79">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L80">                    .body(Collections.singletonMap(&quot;message&quot;, e.getMessage()));</span>
+        }
+    }
+
+    @PatchMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; updatePassword(@PathVariable Long id,
+            @Valid @RequestBody String password) {
+        try {
+<span class="fc" id="L88">            UserAccount updatedAccount = accountService.updatePassword(id, password);</span>
+<span class="fc" id="L89">            return ResponseEntity.ok(updatedAccount);</span>
+<span class="fc" id="L90">        } catch (UserAccountNotFoundException e) {</span>
+<span class="fc" id="L91">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L92">                    .body(Collections.singletonMap(&quot;message&quot;, e.getMessage()));</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

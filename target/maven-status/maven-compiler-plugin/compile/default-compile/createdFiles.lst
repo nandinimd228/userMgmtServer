@@ -1,0 +1,12 @@
+com\example\server\configuration\WebConfig.class
+com\example\server\entity\UserAccount.class
+com\example\server\controller\UserAccountController.class
+com\example\server\configuration\SwaggerConfig.class
+com\example\server\ServerApplication.class
+com\example\server\controller\AuthController.class
+com\example\server\exception\InvalidCredentialsException.class
+com\example\server\service\UserAccountService.class
+com\example\server\exception\UserAccountNotFoundException.class
+com\example\server\repository\UserAccountRepository.class
+com\example\server\configuration\SecurityConfig.class
+com\example\server\exception\EmailAlreadyExistsException.class

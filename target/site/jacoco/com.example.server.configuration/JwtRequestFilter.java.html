@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtRequestFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.example.server.configuration</a> &gt; <span class="el_source">JwtRequestFilter.java</span></div><h1>JwtRequestFilter.java</h1><pre class="source lang-java linenums">package com.example.server.configuration;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.example.server.service.MyUserDetailsService;
+
+import io.jsonwebtoken.ExpiredJwtException;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Component
+public class JwtRequestFilter extends OncePerRequestFilter {
+
+    private JwtTokenUtil jwtTokenUtil;
+
+    private MyUserDetailsService userDetailsService;
+
+<span class="fc" id="L27">    public JwtRequestFilter(MyUserDetailsService myUserDetailsService, JwtTokenUtil jwtTokenUtil) {</span>
+<span class="fc" id="L28">        this.userDetailsService = myUserDetailsService;</span>
+<span class="fc" id="L29">        this.jwtTokenUtil = jwtTokenUtil;</span>
+<span class="fc" id="L30">    }</span>
+
+    @Override
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
+
+<span class="fc" id="L36">        String requestURI = request.getRequestURI();</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (requestURI.startsWith(&quot;/v3/api-docs&quot;) ||</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">                requestURI.startsWith(&quot;/swagger-ui.html&quot;) ||</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">                requestURI.startsWith(&quot;/swagger-ui/&quot;) ||</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">                requestURI.startsWith(&quot;/api/v1/login&quot;) ||</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                requestURI.startsWith(&quot;/webjars/&quot;)) {</span>
+<span class="fc" id="L42">            chain.doFilter(request, response);</span>
+<span class="fc" id="L43">            return;</span>
+        }
+
+<span class="fc" id="L46">        final String requestTokenHeader = request.getHeader(&quot;Authorization&quot;);</span>
+
+<span class="fc" id="L48">        String username = null;</span>
+<span class="fc" id="L49">        String jwtToken = null;</span>
+
+<span class="fc bfc" id="L51" title="All 4 branches covered.">        if (requestTokenHeader != null &amp;&amp; requestTokenHeader.startsWith(&quot;Bearer &quot;)) {</span>
+<span class="fc" id="L52">            jwtToken = requestTokenHeader.substring(7);</span>
+            try {
+<span class="fc" id="L54">                username = jwtTokenUtil.getUsernameFromToken(jwtToken);</span>
+<span class="fc" id="L55">            } catch (ExpiredJwtException e) {</span>
+<span class="fc" id="L56">                System.out.println(&quot;JWT Token has expired&quot;);</span>
+            }
+<span class="fc" id="L58">        } else {</span>
+<span class="fc" id="L59">            logger.warn(&quot;JWT Token does not begin with Bearer String&quot;);</span>
+        }
+
+<span class="pc bpc" id="L62" title="1 of 6 branches missed.">        if (username != null &amp;&amp; SecurityContextHolder.getContext().getAuthentication() == null &amp;&amp; jwtToken != null) {</span>
+<span class="fc" id="L63">            UserDetails userDetails = userDetailsService.loadUserByUsername(username);</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if (jwtTokenUtil.validateToken(jwtToken, username)) {</span>
+<span class="fc" id="L65">                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(</span>
+<span class="fc" id="L66">                        userDetails, null, userDetails.getAuthorities());</span>
+<span class="fc" id="L67">                usernamePasswordAuthenticationToken</span>
+<span class="fc" id="L68">                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));</span>
+<span class="fc" id="L69">                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);</span>
+            }
+        }
+<span class="fc" id="L72">        chain.doFilter(request, response);</span>
+<span class="fc" id="L73">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,11 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+server,com.example.server.service,UserAccountService,0,143,0,12,0,28,0,17,0,11
+server,com.example.server.exception,InvalidCredentialsException,0,4,0,0,0,2,0,1,0,1
+server,com.example.server.exception,EmailAlreadyExistsException,0,4,0,0,0,2,0,1,0,1
+server,com.example.server.exception,UserAccountNotFoundException,0,4,0,0,0,2,0,1,0,1
+server,com.example.server.controller,AuthController,0,36,0,0,0,9,0,2,0,2
+server,com.example.server.controller,UserAccountController,0,96,0,0,0,28,0,7,0,7
+server,com.example.server.configuration,WebConfig,0,49,0,0,0,6,0,2,0,2
+server,com.example.server.configuration,LoginFilter,11,3,0,0,3,1,1,1,1,1
+server,com.example.server.configuration,SecurityConfig,0,23,0,0,0,6,0,4,0,4
+server,com.example.server.configuration,SwaggerConfig,0,17,0,0,0,5,0,2,0,2

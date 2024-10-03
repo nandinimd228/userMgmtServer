@@ -1,0 +1,4 @@
+com\example\server\controllerTest\AuthControllerTest.class
+com\example\server\serviceTest\UserAccountServiceTest.class
+com\example\server\controllerTest\UserAccountControllerTest.class
+com\example\server\ServerApplicationTests.class
